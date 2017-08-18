@@ -1,4 +1,4 @@
-# sibship_analysis
+# SNPs to COLONY
 Helpful scripts for the SNP to sibship pipeline!
 
 NOTE: I am by no means a coding master and am a git novice. I'm working on updating these files to be useable by other humans. Please contact me with any questions you may have or suggestions for making them clearer. I will be updating this repository with a workflow, guide, and annotated scripts over the next several months. 
