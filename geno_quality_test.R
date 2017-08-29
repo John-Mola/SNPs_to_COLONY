@@ -48,3 +48,7 @@ options(scipen=12)
 p1 = ggplot(data = combined, aes(x=X1, y=geno_calls)) + geom_point() + geom_smooth() + labs(x="Alignments", y="Fraction of genotypes called")
 
 p1
+
+
+p2 = ggplot(data = combined, aes(x=X1)) + geom_histogram(binwidth = 20000) + labs(x="Alignments", y="# of samples")
+p2
