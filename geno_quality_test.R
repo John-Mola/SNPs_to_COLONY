@@ -38,7 +38,7 @@ tf_sub3 = sapply(tf_sub2, as.numeric) # Needed for colSums
 geno_calls = colSums(tf_sub3) # Make a vector with the sum of all below calls
 
 
-bam_counts = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/ts_bams_count", col_names = FALSE) # load in that bam counts file
+bam_counts = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/all_bams_count", col_names = FALSE) # load in that bam counts file
 
 combined = bam_counts %>% #Mutate the two columns together, divide geno_calls by the # of SNPs given by length of a column
   mutate(geno_calls = geno_calls/length(tf_sub2$X3))
@@ -50,5 +50,5 @@ p1 = ggplot(data = combined, aes(x=X1, y=geno_calls)) + geom_point() + geom_smoo
 p1
 
 
-p2 = ggplot(data = combined, aes(x=X1)) + geom_histogram(binwidth = 20000) + labs(x="Alignments", y="# of samples")
+p2 = ggplot(data = bam_counts, aes(x=X1)) + geom_histogram(binwidth = 20000) + labs(x="Alignments", y="# of samples")
 p2

@@ -30,17 +30,17 @@ options(scipen = 12) # to avoid issues with paste functions
 # GET DATA ----------------------------------------------------------------
 
 # set subsample number & site
-bamNo<-100
+bamNo<-200
 site<-"vosi_mcl"
 # "NFA_sites", "NFA", "YUB", "SM-RASI", "RANA", "AMER_YUB", "MFA_RUB" # useless Ryan stuff ;) 
 
 # metadata
 # NOTE FOR RYAN: would be good for there to be an indication of what the metadata file should look like. Or at least what the columns are. Just realizing mine has no column headers lol
-metadat<- read_csv("McLaughlin/Data/AllYears/mcl_all_matched.csv")
+metadat<- read_csv("~/Google Drive/Davis/Projects/McLaughlin/Data/AllYears/mcl_all_matched.csv")
 
 # this is the filtered subsampled list:
 # NOTE: modify per user's naming convention
-bams <- read_tsv("RAD Sequencing/BIG_SEQUENCE_DUMP_trials/bam_lists/vm_100_bam", col_names = F)
+bams <- read_tsv("~/Google Drive/Davis/Projects/McLaughlin/Analyses/RAD/vm_200_bams", col_names = F)
 
 # remove the *000 component for join
 subsamp<-format(bamNo*1000, scientific=F) ## Had to add format to keep R from doing scientific notation which then ruined below gsub. Probably a cleaner way to do it. 
@@ -87,6 +87,9 @@ bams$X1<-gsub(pattern = paste0(".sort.flt_",subsamp,".bam"), replacement = "", b
 # RENAME CASTES -----
 metadat$queen <- if_else(metadat$queen == 1, "queen", "worker", "worker")
 
+metadat <- metadat %>% 
+  mutate(caste = if_else(metadat$queen == 1, "queen", if_else(metadat$male == 1, "male", "worker")))
+
 # NO FILTER, JUST RENAME -----
 dat <- metadat
 # JOIN WITH FLT SUBSAMPLE LIST --------------------------------------------
@@ -112,7 +115,7 @@ clst_out1<-dfout %>%
   dplyr::select(unique.ID, queen, year) %>% #had to add dplyr:: because clashing with MASS (prob from the 12 other R files I'm running at once)
   dplyr::rename(FID=unique.ID, IID=queen, CLUSTER=year)
 head(clst_out1)
-write_delim(clst_out1, path=paste0("vm_",bamNo,"_clst"))
+write_delim(clst_out1, path="Davis/Projects/McLaughlin/Analyses/RAD/vm_200_clst_fixed")
 
 
 # BASH --------------------------------------------------------------------
