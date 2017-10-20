@@ -1,0 +1,162 @@
+---
+title: "Sequence Data to COLONY"
+subtitle: "A simple guide for going from sequencing data all the way to sibship inference!"
+author: "John M. Mola"
+date: "10/18/2017"
+output: html_document
+css: avenir-white.css
+---
+
+## Outline: The Bare Bones 
+
+1. [Split/align](#1)
+2. [Filter to read quality](#2)
+3. [Subset to samples of interest](#3)
+4. [SNP Calling (with angsd)](#4)
+5. [Loci-selection for sibship](#5)
+6. [Run COLONY!](#6)
+
+  X. [Quality Checks and Misc.](#7)  
+  
+  Y. [Glossary of *some* terms](#8)
+
+## 1. Split/align
+
+### The `split` script
+
+First, we will split our .fastq files using the `run_BestRadSplit_PstI.sh` `bash` script provided by the Miller Lab. 
+
+##### Note: The script is specific to the PstI cutter, so use SbfI if that is the cutter, etc. 
+
+The script gets fed the R1 and R3 .fastq files and we give our output a name, typically the standard name. (e.g. `SOMM185_ACTTGA` below)
+
+`sbatch -p high -t 24:00:00 ../run_BestRadSplit_PstI.sh SOMM185_R1_ACTTGA.fastq  SOMM185_R3_ACTTGA.fastq SOMM185_ACTTGA`
+
+In a new screen, compress the output of the `split` script:
+
+`srun -t 24:00:00 gzip *ACTTGA.fastq`
+
+### The `align` script
+
+Next, we will make two lists of all of the .fastq file names and then paste them together. We'll then feed this list to a `run_align` script with a reference genome (available online). 
+
+`ls *RA* | sed "s/\.fastq\.gz//g" > listA`
+`ls *RB* | sed "s/\.fastq\.gz//g" > listB`
+
+Here, selected all of the files with RA and RB located inside the file name (`ls *RA*`) and then substituted (`s`) .fastq and .gz for a blank space (`//`). This gives us just the file names without the extensions. 
+
+`paste listA listB > list_ACTTGA`
+`sbatch -t 24:00:00 ../run_align.sh list_ACTTGA ../../Mola/B_imp_ref_genome/GCF_000188095.1_BIMP_2.0_genomic.fna`
+
+To align, we combine the two lists into one list (in this case for plate `ACTTGA`). We then `sbatch` the `run_align.sh` script providing it with our list and a reference genome (in this case *Bombus impatiens*). 
+
+### A little bit of tidying
+
+To finish the split/align section, I like to organize the output files. This is especially handy when we're working plate-by-plate rather than in a full run of all plates at once. 
+
+`mkdir aligned_files filtered_bams slurm_outputs zipped_fastq`  
+
+Then move the various file types into their respective folders (with `mv`). 
+
+It's also good to check the length of the bams file (should be 96) using `ls filtered_bams/ | wc`. 
+
+In the end, 4 subdirectories, the list, and the two original .fastq files should remain in the plate directory. 
+
+## 2. Filter to read quality 
+
+There are various ways to filter read quality, and some of them will be done later on at the loci level when we call SNPs. However, we can subset to individuals on a minimum number of aligned reads. This helps filter out poorly sequenced individuals who might mess up downstream loci selection and be unusable anyway. 
+
+#### Use the subsample script
+
+> need to insert info on subsample script
+
+## 3. Subset to our sample of interest
+
+For sibship analysis, we want loci that are the most informative within our specific "population" or sample of interest. For example, we know that workers in 2012 won't be full-sibs of workers in 2016, so we don't want to SNP call with all of those individuals mixed together. You can likely skip this step for other types of analyses and call SNPs first, then subset for downstream analyses. 
+
+Copy over the bamclst_lists.R file (This handy script was originally written by [Ryan Peek](https://ryanpeek.github.io)). 
+
+`cp ~dir/bamclst_lists.R /dir/.`
+
+Refer to the script for exact details. 
+
+#### Input
+
+* A bamlist, the script assumes you're using a subsampled list, but this is not necessary.
+* Metadata containing *individual barcodes* and whatever information you have for those samples. 
+
+#### Output
+
+* A bamlist of your samples of interest (for use with angsd) 
+
+AND/OR
+
+* A `.clst` file you can use for PCA plots (this requires output from `pca_calc.sh` script as well)
+
+## 4. SNP Calling (with angsd)
+
+After subsetting to our bamlist to the subpopulation of interest, we can call SNPs using `angsd`. The binary will need to be installed on your user cluster. 
+
+A basic angsd call looks like this:
+
+`~/bin/angsd -bam $list  -GL 1 -out $output -doMaf 2 -minInd 20 -doMajorMinor 1 -SNP_pval 0.000001 -doGeno 4 -doPost 2 -postCutoff 0.95 -minMaf 0.005`
+
+Wrapping this in a shell script is probably the way to go. I have one called `~johnmola/scripts/genoget.sh`. 
+
+#### Input
+
+* a bamlist (`$list`)
+* an output file name (`$output`)
+
+#### Output (can be customized, output below is what the basic angsd call will provide)
+
+* an arguments file (`.arg`)
+* minor allele frequency spectrum (`.mafs`)
+* genotypes (`.geno`)
+
+##### Note: They will be `.gz` files. Just unzip. 
+
+
+## 5. Loci-selection for sibship
+
+In order to run COLONY successfully, we need to select loci that are at least:
+
+* In HWE
+* In Linkage-equilibrium
+* 
+
+## 6. Running COLONY!
+
+## X. Quality Checks and Miscellaneous
+
+## Y. Glossary of some terms
+
+PLACEHOLDER: I've noticed that I use subset, subsample, and subpopulation interchangeably...but to mean different things. Go back through and make clear. Might also be handy to have a glossary to terms that are unique (like bamlist)/weird. 
+
+* `bamlist` - 
+* subpopulation -
+* subsample -
+* subset
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
