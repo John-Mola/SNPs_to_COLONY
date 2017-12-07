@@ -25,18 +25,18 @@ options(scipen = 12) # to avoid issues with paste functions
 # GET DATA ----------------------------------------------------------------
 
 # set subsample number & site
-bamNo<-200
+bamNo<-100
 site<-"vosi_mcl"
 
 # metadata
 # This file should include your barcodes for each individual, and whatever information you have associated with those samples. 
 # e.g. barcode | sample name | year | caste | site | species
 #     ATCG...  | jm_bee1     | 2015 | queen | mcl1 | vosnesenskii
-metadat<- read_csv("~/Google Drive/Davis/Projects/McLaughlin/Data/AllYears/mcl_all_matched.csv")
+metadat<- read_csv("~/Google Drive/Davis/Projects/Sierras/Data/2015/sra_matched_all.csv")
 
 # this is the filtered subsampled list:
 # NOTE: modify per user's naming convention
-bams <- read_tsv("~/Google Drive/Davis/Projects/McLaughlin/Analyses/RAD/vm_200_bams", col_names = F)
+bams <- read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/bamlists/sub_100k_bams", col_names = F)
 
 # remove the *000 component for join
 subsamp<-format(bamNo*1000, scientific=F) 
@@ -78,7 +78,7 @@ bams$X1<-gsub(pattern = paste0(".sort.flt_",subsamp,".bam"), replacement = "", b
 
 # JOIN WITH FLT SUBSAMPLE LIST --------------------------------------------
 
-dfout <- inner_join(dat, bams, by=c("library.ID"="X1")) %>% arrange(library.ID) # modify "library.ID" to match your metadata file.
+dfout <- inner_join(datB, bams, by=c("Library.ID"="X1")) %>% arrange(Library.ID) # modify "library.ID" to match your metadata file.
 
 # WRITE TO BAMLIST --------------------------------------------------------
 
@@ -92,10 +92,16 @@ names(dfout) # just so you know what to call stuff below
 
 # Modify "unique.ID" "queen" and "year" to whatever you want
 clst_out1<-dfout %>% 
-  dplyr::select(unique.ID, queen, year) %>% 
-  dplyr::rename(FID=unique.ID, IID=queen, CLUSTER=year)
+  dplyr::select(unique.ID, site, date) %>% 
+  dplyr::rename(FID=unique.ID, IID=site, CLUSTER=date)
 head(clst_out1)
-write_delim(clst_out1, path="Davis/Projects/McLaughlin/Analyses/RAD/vm_200_clst_fixed")
+write_delim(clst_out1, path="~/Google Drive/Davis/Projects/Sierras/Analyses/RAD to COLONY/clst/vsw_pca_100k_out_clst")
+
+
+## Write perl header file
+
+write_delim(as.data.frame(dfout$unique.ID),
+            path = "~/Google Drive/Davis/Projects/Sierras/Analyses/RAD to COLONY/perl headers/bsw_100k_header", col_names = F)
 
 
 # BASH --------------------------------------------------------------------
