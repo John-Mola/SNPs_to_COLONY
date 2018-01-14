@@ -2,6 +2,6 @@
 
 I'll be putting a full annotation and workflow up eventually. For now, here's a general idea of the process. Please contact me if you'd like more information or want help in using RADseq data with the program COLONY. 
 
-![](Workflow.png)
+![](https://github.com/John-Mola/SNPs_to_COLONY/blob/master/WorkFlow.png)
 
 
