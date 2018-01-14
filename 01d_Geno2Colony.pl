@@ -4,13 +4,13 @@ $geno = $ARGV[0];
 $list = $ARGV[1];
 
 #SNP Filters
-$max_mis = 0.25;
-$min_maf = 0.01;
+$max_mis = 0.50;
+$min_maf = 0.05;
 $max_chi = 3.84;
 
 #SNP Drawing
-$num = 300;
-$dist = 10000;
+$num = 5000;
+$dist = 5000;
 
 #Colony
 $type = 0;
@@ -74,11 +74,14 @@ while ($x < $num) {
 		$mis = $homo[0]/($homo[0]+$homo[$major]+$homo[$minor]+$het);
 		$maf = $allele[$minor]/($allele[$major]+$allele[$minor]);
 
+#		print "$tabs[0]\t$tabs[1]\t$major\t$minor\t$mis\t$maf\n";
+
 		$P = (1-$maf)**2;
 		$Q = $maf**2;
 		$H = 1-$P-$Q;
 
 		$eP = $P*($homo[$major]+$homo[$minor]+$het);
+
 		$eQ = $Q*($homo[$major]+$homo[$minor]+$het);
 		$eH = $H*($homo[$major]+$homo[$minor]+$het);
 
@@ -91,7 +94,7 @@ while ($x < $num) {
 			$fail = 1;
 		}
 
-		if ($mis <= $max_mis && $maf >= $min_mafi && $chi <= $max_chi && $fail == 0) {
+		if ($mis <= $max_mis && $maf >= $min_maf && $chi <= $max_chi && $fail == 0) {
 			$fail = 0;
 			if ($used{$tabs[0]} ne "") {
 				@commas = split(/\,/,$used{$tabs[0]});

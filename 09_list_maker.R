@@ -70,6 +70,11 @@ bams$X1<-gsub(pattern = paste0(".sort.flt_",subsamp,".bam"), replacement = "", b
 # RENAME CASTES -----
 #metadat$queen <- if_else(metadat$queen == 1, "queen", "worker", "worker")
 
+#datVSW = metadat %>% 
+#  filter(is.na(male)) %>% 
+#  mutate(caste = if_else(is.na(queen), "worker", "queen")) %>% 
+#  filter(caste == "worker", year == 2015, species == "vosnesenskii")
+
 #metadat <- metadat %>% 
 #  mutate(caste = if_else(metadat$queen == 1, "queen", if_else(metadat$male == 1, "male", "worker")))
 
