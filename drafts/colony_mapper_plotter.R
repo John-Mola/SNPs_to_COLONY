@@ -69,7 +69,7 @@ filt_tf = combo_tf %>%
 ggplotly(ggplot(data=filt_tf) + geom_point(aes(x=x,y=y,color=FamilyID)) + geom_point(aes(x=x.fam.center,y=y.fam.center, color=FamilyID), shape=8, size=2) + geom_segment(aes(x=x.fam.center, y=y.fam.center, xend=x, yend=y, color=FamilyID), alpha=0.2) + theme_classic())
 
 
-#### Extremely basic test:
+#### Extremely basic test stuff:
 
 require(tidyverse)
 
