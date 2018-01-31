@@ -24,19 +24,19 @@ I'll be putting a full annotation and workflow up eventually. For now, here's a 
 
 * `02a_colonizeR` merges metadata (user provided) with output of `COLONY`, creates necessary variables for family matching
 
-* `02b_sibshipPlots` DOESN'T EXIST YET create basic plots of `COLONY` output data (e.g. family sizes)
+* `02b_sibshipPlots` DRAFT VERSION create basic plots of `COLONY` output data (e.g. family sizes)
 
-* `02c_colony_mapper` DOESN'T EXIST YET creates maps of `colonizeR` output (e.g. family locations, floral abundance, seasonality, etc)
+* `02c_colony_mapper` DRAFT VERSION creates maps of `colonizeR` output (e.g. family locations, floral abundance, seasonality, etc)
 
 * `02d_summarise_colony` DOESN'T EXIST YET basic summary statistics from `colonizeR` output
 
 #### Downstream data analyses -- The good stuff!!
 
-* `03a_sib_finder` DOESN'T EXIST YET calculates separation distances between siblings (worker-worker or queen-worker, whatever)
+* `03a_sib_finder` DRAFT VERSION calculates separation distances between siblings (worker-worker or queen-worker, whatever)
 
-* `03b_colony_counter` DOESN'T EXIST YET estimates colony abundance/density from a given set of parameters (site, year, region, burn status, etc)
+* `03b_colony_counter` DRAFT VERSION estimates colony abundance/density from a given set of parameters (site, year, region, burn status, etc). Uses the R package `capwire` as its core.
 
-* `03c_nest_finder` DOESN'T EXIST YET estimates nest locations for sibling groups 
+* `03c_nest_finder` DOESN'T EXIST YET estimates nest locations for sibling groups (this may be redundant with sib_finder anyway since colony location is inferred for distance calculations)
 
 * `03d_colony_survivor` DOESN'T EXIST YET calculates basic demographic measures like survivorship, reproduction, and growth using redetections of families
 
