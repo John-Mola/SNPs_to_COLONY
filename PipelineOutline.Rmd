@@ -7,6 +7,8 @@ output: html_document
 css: avenir-white.css
 ---
 
+This is intended as an example pipeline for a project. There's definitely ways to improve the efficiency of this process, but it does in fact work. It is likely best to use this pipeline as a reference in conjuction with the other resources on the website and your own best judgement. The steps begin assuming you have two .fastq.gz files (a R1 and R3) for each plate (as in commonly how the Miller Lab will return files to you). If that's not the case, go check out the Downloading Data tab for more details on earlier steps. 
+
 ## Outline: The Bare Bones 
 
 1. [Split/align](#split)
@@ -26,21 +28,21 @@ css: avenir-white.css
 
 ### The `split` script
 
-First, we will split our .fastq files using the `run_BestRadSplit_PstI.sh` `bash` script provided by the Miller Lab. 
+**Note** This is per plate for simplicity sake. For a much slicker way of doing it, see the Downloading Data tab and associated files. 
 
-##### Note: The script is specific to the PstI cutter, so use SbfI if that is the cutter, etc. 
+First, we will split our .fastq files for each plate using the `run_BestRadSplit_PstI.sh` `bash` script provided by the Miller Lab. 
+
+##### Note: The script is specific to the PstI cutter, so use SbfI if that is the cutter, etc. (See Downloading Data tab for more info)
 
 The script gets fed the R1 and R3 .fastq files and we give our output a name, typically the standard name. (e.g. `SOMM185_ACTTGA` below)
 
 `sbatch -p high -t 24:00:00 ../run_BestRadSplit_PstI.sh SOMM185_R1_ACTTGA.fastq  SOMM185_R3_ACTTGA.fastq SOMM185_ACTTGA`
 
-In a new screen, compress the output of the `split` script:
-
-`srun -t 24:00:00 gzip *ACTTGA.fastq`
+In a new screen, compress the output of the `split` script using `gzip`. 
 
 ### The `align` script
 
-Next, we will make two lists of all of the .fastq file names and then paste them together. We'll then feed this list to a `run_align` script with a reference genome (available online). 
+Next, we will make two lists of all of the .fastq.gz file names (they should be .gz because we compressed them!) and then paste them together. We'll then feed this list to a `run_align` script with a reference genome (available online). 
 
 `ls *RA* | sed "s/\.fastq\.gz//g" > listA`
 `ls *RB* | sed "s/\.fastq\.gz//g" > listB`
@@ -60,7 +62,7 @@ To finish the split/align section, I like to organize the output files. This is 
 
 Then move the various file types into their respective folders (with `mv`). 
 
-It's also good to check the length of the bams file (should be 96) using `ls filtered_bams/ | wc`. 
+It's also good to check the length of the bams file (should be 96 per plate) using `ls filtered_bams/ | wc`. 
 
 In the end, 4 subdirectories, the list, and the two original .fastq files should remain in the plate directory. 
 

@@ -1,30 +1,5 @@
-##%######################################################%##
-#                                                          #
-####                     Real Data                      ####
-#                                                          #
-##%######################################################%##
-
-# Packages -----
-require(tidyverse)
-
-# Data loading -----
-# Genotype file 1
-
-gf1 = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib1.geno", col_names = FALSE)
-
-# Genotype file 2 
-
-gf2 = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib2.geno", col_names = FALSE) 
-# MAF file
-
-maf_gf=read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib1.mafs")  
-
-# Define aligned reads threshold
-threshold = "Minimum 200k Aligned Reads"
-
-# Function -----
-
-genotype_compare <- function(gf1, gf2, maf_gf, threshold)
+genotype_compare_h <-
+function(gf1, gf2, maf_gf, threshold)
 {
   
 require(tidyverse)
@@ -106,7 +81,7 @@ gf5.4.1 = inner_join(gf5, maf_gf, by = c("SNP"))
 
 gf5.4.1.r = inner_join(gf5.r, maf_gf, by = c("SNP"))
 
-p1 = ggplot() + geom_point(data=gf5.4, aes(x = knownEM, y = percent_correct, color=nInd), alpha=0.2) + geom_point(data=gf5.4.r, aes(x= knownEM, y= percent_correct), color = "orange", alpha=0.05) + labs(x = "MAF from library 1") + scale_colour_continuous() + annotate("text", x=0.1, y=0.01,label="Yellow is randomized") + labs(title= threshold)
+#p1 = ggplot() + geom_point(data=gf5.4, aes(x = knownEM, y = percent_correct, color=nInd), alpha=0.2) + geom_point(data=gf5.4.r, aes(x= knownEM, y= percent_correct), color = "orange", alpha=0.05) + labs(x = "MAF from library 1") + scale_colour_continuous() + annotate("text", x=0.1, y=0.01,label="Yellow is randomized") + labs(title= threshold)
 
 real_dat_sum = gf5.4.1 %>% 
   filter(!is.na(score)) %>% 
@@ -126,22 +101,17 @@ rand_label = paste(" # comparisons:", rand_dat_sum[1,3], "\n % matched:", round(
 
 p2 = gf5.4 %>% 
   #filter(nInd >= 49) %>% 
-  ggplot(., aes(x=percent_correct)) + geom_bar(stat="count", binwidth = 0.01) + labs(title="True Data") + annotate("text", x=-Inf, y=Inf, label = real_label, hjust=0,vjust=1)
+  ggplot(., aes(x=percent_correct)) + geom_bar(stat="count", binwidth = 0.01) + labs(title=paste(threshold, "True Data")) + annotate("text", x=-Inf, y=Inf, label = real_label, hjust=0,vjust=1)
 
 p3 = gf5.4.r %>% 
   #filter(nInd >= 49) %>% 
-  ggplot(., aes(x=percent_correct)) + geom_bar(stat="count", binwidth = 0.01) + labs(title="Randomized") + annotate("text", x=-Inf, y=Inf, label = rand_label, hjust=0,vjust=1)
+  ggplot(., aes(x=percent_correct)) + geom_bar(stat="count", binwidth = 0.01) + labs(title=paste(threshold,"Randomized")) + annotate("text", x=-Inf, y=Inf, label = rand_label, hjust=0,vjust=1)
 
 #sum_of_sums = bind_rows(real_dat_sum,rand_dat_sum)
 
 #p1.1 <- add_sub(p1, write.table(sum_of_sums[1:2,], col.names = F, row.names = F, quote = F))
 
 bottom = plot_grid(p2,p3)
-plot_grid(p1, bottom, nrow = 2)
-
+#plot_grid(p1, bottom, nrow = 2)
+bottom
 }
-
-dump("genotype_compare", "../SNPs_to_COLONY/Scripts_MasterCopies/geno_compare_function.R")
-
-
-genotype_compare(gf1,gf2,maf_gf, threshold)

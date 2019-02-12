@@ -1,30 +1,5 @@
-##%######################################################%##
-#                                                          #
-####                     Real Data                      ####
-#                                                          #
-##%######################################################%##
-
-# Packages -----
-require(tidyverse)
-
-# Data loading -----
-# Genotype file 1
-
-gf1 = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib1.geno", col_names = FALSE)
-
-# Genotype file 2 
-
-gf2 = read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib2.geno", col_names = FALSE) 
-# MAF file
-
-maf_gf=read_tsv("~/Google Drive/Davis/Projects/RAD Sequencing/matched_400k_lib1.mafs")  
-
-# Define aligned reads threshold
-threshold = "Minimum 200k Aligned Reads"
-
-# Function -----
-
-genotype_compare <- function(gf1, gf2, maf_gf, threshold)
+genotype_compare <-
+function(gf1, gf2, maf_gf, threshold)
 {
   
 require(tidyverse)
@@ -140,8 +115,3 @@ bottom = plot_grid(p2,p3)
 plot_grid(p1, bottom, nrow = 2)
 
 }
-
-dump("genotype_compare", "../SNPs_to_COLONY/Scripts_MasterCopies/geno_compare_function.R")
-
-
-genotype_compare(gf1,gf2,maf_gf, threshold)
