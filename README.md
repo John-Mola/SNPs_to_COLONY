@@ -1,3 +1,8 @@
+## PLEASE NOTE I HAVE NOT MAINTAINED THIS REPO FOR SOME TIME
+
+**As of March 2020**
+If you have questions about how to implement getting SNP data (especially from `angsd`) into `COLONY`, please feel free to contact me. I have R code for several of the steps stating "DRAFT_VERSION" and some of that can be found in my `bb-forage-mvmt-eco-ent` repository. Otherwise, the included code should still be useful and help get you on the right path. 
+
 # SNPs to COLONY...and beyond!
 
 I'll be putting a full annotation and workflow up eventually. For now, here's a general idea of the process. Please contact me if you'd like more information or want help in using RADseq data with the program COLONY. 
